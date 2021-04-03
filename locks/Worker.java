@@ -16,8 +16,9 @@ class Worker extends Thread {
   public void run() {
     int i = 0;
 
-    while (i < limit) {
+    while (true) {
       i = counter.getandinc();
+      if(i > limit) break;
       System.out.println(String.format("Thread %d: %d", id, i));
       try {
         Thread.sleep(DELAY);

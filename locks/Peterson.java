@@ -3,14 +3,19 @@ package locks;
 class Peterson implements Lock {
   private final int n;
 
-  private boolean[] flag = new boolean[2];
+  private volatile boolean[] flag = new boolean[2];
   private volatile int victim;
 
-  Peterson(int n) { this.n = n; }
+  Peterson(int n) { 
+    if(n != 2) {
+      throw new IllegalArgumentException("Peterson lock only supports 2 threads!");
+    }
+    this.n = n; 
+  }
 
   @Override
   public void lock() {
-    int i = (int)Thread.currentThread().getId() % n;
+    int i = (int) (Thread.currentThread().getId() % n);
     int j = 1 - i; // other thread
     flag[i] = true;
     victim = i;
@@ -20,7 +25,7 @@ class Peterson implements Lock {
 
   @Override
   public void unlock() {
-    int i = (int)Thread.currentThread().getId() % n + 1;
+    int i = (int) (Thread.currentThread().getId() % n);
     flag[i] = false;
   }
 }

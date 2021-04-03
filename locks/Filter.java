@@ -3,8 +3,8 @@ package locks;
 class Filter implements Lock {
   private final int n;
 
-  private int[] level;
-  private int[] victim;
+  private volatile int[] level;
+  private volatile int[] victim;
 
   Filter(int n) {
     this.n = n;
@@ -14,16 +14,14 @@ class Filter implements Lock {
 
   @Override
   public void lock() {
-    int i = (int) Thread.currentThread().getId() % n;
+    int i = (int) (Thread.currentThread().getId() % n);
 
     for (int j = 1; j < n; j++) {
       level[i] = j;
       victim[j] = i;
       for (int k = 0; k < n; k++) {
-        if (k == i)
-          continue;
-        while (level[k] >= j && victim[j] == i)
-          ;
+        if (k == i) continue;
+        while (level[k] >= j && victim[j] == i);
       }
     }
 
@@ -31,7 +29,7 @@ class Filter implements Lock {
 
   @Override
   public void unlock() {
-    int i = (int) Thread.currentThread().getId() % n;
+    int i = (int) (Thread.currentThread().getId() % n);
     level[i] = 0;
   }
 }
