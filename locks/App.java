@@ -27,7 +27,11 @@ public class App {
     }
   
     //Lock lock = new Peterson(numThreads); // Only works with numThreads=2
-    Lock lock = new Filter(numThreads);
+    //Lock lock = new Filter(numThreads);
+
+    //Lock lock = new Flaky(numThreads);
+
+    Lock lock = new Bakery(numThreads);
 
     Counter counter = new Counter(lock);
 
